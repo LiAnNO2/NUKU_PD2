@@ -3,7 +3,6 @@
 #include<fstream>
 #include <vector>
 #include <random>
-#include <conio.h>
 #include <chrono>
 using namespace std;
 
@@ -20,6 +19,7 @@ int main() {
 	int total_computer;
 	int total_player;
 	char ch;
+	string p;
 	string b; // 判斷要不要重新選game
 	vector<string> computer;
 	vector<string> player;
@@ -57,9 +57,7 @@ int main() {
 		switch (a) {
 		case 1:
 			cout << "Welcome to Black Jack" << endl;
-			cout << "Please enter any key to continue" << endl;
 			cout << endl;
-			ch = _getch();
 			m = 0, n = 0;
 			total_computer = 0;
 			total_player = 0;
@@ -91,14 +89,13 @@ int main() {
 				}
 			}
 			cout << "\nYour turn" << endl;
-			char p;
 			while (1) {
 				cout << "Do you want more? ";   // 要牌就打y 不要就打n
 				cin >> p;
-				if (p == 'n') {
+				if (p == "n") {
 					break;
 				}
-				else if (p == 'y') {
+				else if (p == "y") {
 					int e = dist(gen);
 					player.push_back(card[e - 1]);
 					total_player = count_num(player, e - 1, total_player);
