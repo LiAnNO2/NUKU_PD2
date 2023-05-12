@@ -1,2 +1,0 @@
-all: HWn.cpp
-    g++ HWn.cpp -o hwn
