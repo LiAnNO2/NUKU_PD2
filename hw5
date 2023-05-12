@@ -17,7 +17,7 @@ vector<class keywords> key;
 vector<string> sentence; // 句子輸入
 vector<string> id;
 
-string change(string s); // 轉小寫和去掉非字母和控空格符號
+string change(string s); // 轉小寫和去掉非字母和留空格符號
 bool yon(vector<string>& mid, int k); // 判斷有沒有符合
 
 int main(int argc, char** argv) {
