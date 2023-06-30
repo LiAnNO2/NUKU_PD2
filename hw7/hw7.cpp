@@ -10,7 +10,7 @@ using namespace std;
 class keywords { // 紀錄
 public:
     vector<string> keyword;
-    double idf_sum[3] = {};
+    double idf_sum[10] = {};
 };
 
 class ids {  // 儲存
@@ -29,9 +29,8 @@ public:
 vector<class keywords> key;
 vector<class ids> findmax;
 vector<string> sentence; // 句子輸入
-vector<int> repeated_word;
 vector<int> id;
-vector<vector<string>> word; 
+vector<vector<string>> word;
 
 string change(string s); // 轉小寫和去掉非字母和控空格符號
 int count(vector<string>& mid, string kk); // 判斷有沒有符合
@@ -98,15 +97,11 @@ int main(int argc, char** argv) {
     // 計算IDF
     for (int p = 0; p < key.size(); p++) {
         for (int o = 0; o < key[p].keyword.size(); o++) {
-            int num = 0;
-            int sum = 0;
+            int num = 0; // 算IDF用
             for (int i = 0; i < word.size(); i++) {
-                sum = count(word[i], key[p].keyword[o]);
-                if (sum > 0) {
-                    num += 1;
-                }
+                num += count(word[i], key[p].keyword[o]);;
+        
             }
-            repeated_word.push_back(sum);
             if (num != 0) {
                 key[p].idf_sum[o] = (log10((double)num_sentence / num));
             }
@@ -117,19 +112,35 @@ int main(int argc, char** argv) {
     }
 
     // 判斷 
-    int g = 0;
-    for (int k = 0; k < key.size(); k++) {
+    for (int o = 0; o < key.size(); o++) {
         for (int i = 0; i < word.size(); i++) { //每個句子跑一遍
             class ids q;
             q.id2 = id[i];
-            q.total = 0;
-            for (int p = 0; p < key[k].keyword.size(); p++) {
-                q.total += key[p].idf_sum[p] * (repeated_word[g++] / word[i].size());
+            q.total = 0.0;
+            for (int p = 0; p < key[o].keyword.size(); p++) {
+                if (key[o].keyword[p] == "") {
+                    break;
+                }
+                double repeated_word = 0;
+                double word_num = 0;
+                for (int b = 0; b < word[i].size(); b++) {
+                    if (word[i][b] != "" && word[i][b] != " ") {
+                        word_num++;
+                    }
+                    if (key[o].keyword[p].compare(word[i][b]) == 0) {
+                        repeated_word += 1;
+                    }
+                }
+                if (word_num == 0) 
+                    q.total += 0;
+                else
+                    q.total += key[o].idf_sum[p] * (repeated_word / word_num);
             }
             findmax.push_back(q);
         }
         sort(findmax.begin(), findmax.end());
-        for (int y = 0; y < 3; y++) {
+        
+        for (int y = 0; y < k ; y++) {
             if (y != 0)
                 cout << " ";
             if (findmax[y].total == 0)
@@ -137,6 +148,17 @@ int main(int argc, char** argv) {
             else
                 cout << findmax[y].id2;
         }
+        /*
+        cout << "    ";
+        for (int y = 0; y < key[o].keyword.size(); y++) {
+            cout << key[o].idf_sum[y] << ",";
+        }
+        cout << "   |   ";
+        for (int y = 0; y < k; y++) {
+            cout << findmax[y].total << " ";
+        }
+        */
+        cout << endl;
         findmax.clear();
     }
     return 0;
@@ -144,13 +166,12 @@ int main(int argc, char** argv) {
 
 
 int count(vector<string>& mid, string kk) {
-    int n = 0;
     for (int i = 0; i < mid.size(); i++) {
         if (kk.compare(mid[i]) == 0) {
-            n++;
+            return 1;
         }
     }
-    return n;
+    return 0;
 }
 
 string change(string s) {
@@ -161,7 +182,6 @@ string change(string s) {
         }
         else if (('a' <= s[i] && s[i] <= 'z') || s[i] == ' ') {
             h += s[i];
-
         }
     }
     return h;
